@@ -3,6 +3,10 @@
     public class Funcionario : EntidadeBase<Funcionario>
     {
 
+        public Funcionario()
+        {
+        }
+
         public Funcionario(string nome, string login, string senha)
         {
             Nome = nome;

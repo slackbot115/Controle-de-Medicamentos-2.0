@@ -6,13 +6,10 @@
 
   <ItemGroup>
     <Compile Remove="ModuloFornecedor\**" />
-    <Compile Remove="ModuloFuncionario\**" />
     <Compile Remove="ModuloRequisicao\**" />
     <EmbeddedResource Remove="ModuloFornecedor\**" />
-    <EmbeddedResource Remove="ModuloFuncionario\**" />
     <EmbeddedResource Remove="ModuloRequisicao\**" />
     <None Remove="ModuloFornecedor\**" />
-    <None Remove="ModuloFuncionario\**" />
     <None Remove="ModuloRequisicao\**" />
   </ItemGroup>
 
