@@ -7,11 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="ModuloFornecedor\**" />
     <Compile Remove="ModuloRequisicao\**" />
-    <EmbeddedResource Remove="ModuloFornecedor\**" />
     <EmbeddedResource Remove="ModuloRequisicao\**" />
-    <None Remove="ModuloFornecedor\**" />
     <None Remove="ModuloRequisicao\**" />
   </ItemGroup>
 

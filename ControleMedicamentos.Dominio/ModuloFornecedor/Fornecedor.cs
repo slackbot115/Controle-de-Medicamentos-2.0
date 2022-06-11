@@ -2,6 +2,10 @@
 {
     public class Fornecedor : EntidadeBase<Fornecedor>
     {
+        public Fornecedor()
+        {
+        }
+
         public Fornecedor(string nome, string telefone, string email, string cidade, string estado)
         {
             Nome = nome;
