@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="ModuloFornecedor\**" />
+    <Compile Remove="ModuloFuncionario\**" />
+    <Compile Remove="ModuloRequisicao\**" />
+    <EmbeddedResource Remove="ModuloFornecedor\**" />
+    <EmbeddedResource Remove="ModuloFuncionario\**" />
+    <EmbeddedResource Remove="ModuloRequisicao\**" />
+    <None Remove="ModuloFornecedor\**" />
+    <None Remove="ModuloFuncionario\**" />
+    <None Remove="ModuloRequisicao\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FluentValidation" Version="11.0.3" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ControleMedicamentos.Dominio\ControleMedicamentos.Dominio.csproj" />
+  </ItemGroup>
+
+</Project>
