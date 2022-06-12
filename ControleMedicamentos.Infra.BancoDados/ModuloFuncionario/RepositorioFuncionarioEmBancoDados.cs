@@ -148,9 +148,9 @@ namespace ControleMedicamentos.Infra.BancoDados.ModuloFuncionario
 
             while (leitorFuncionario.Read())
             {
-                Funcionario contato = ConverterParaFuncionario(leitorFuncionario);
+                Funcionario funcionario = ConverterParaFuncionario(leitorFuncionario);
 
-                funcionarios.Add(contato);
+                funcionarios.Add(funcionario);
             }
 
             conexaoComBanco.Close();
@@ -167,11 +167,11 @@ namespace ControleMedicamentos.Infra.BancoDados.ModuloFuncionario
             comandoSelecao.Parameters.AddWithValue("ID", id);
 
             conexaoComBanco.Open();
-            SqlDataReader leitorContato = comandoSelecao.ExecuteReader();
+            SqlDataReader leitorFuncionario = comandoSelecao.ExecuteReader();
 
             Funcionario paciente = null;
-            if (leitorContato.Read())
-                paciente = ConverterParaFuncionario(leitorContato);
+            if (leitorFuncionario.Read())
+                paciente = ConverterParaFuncionario(leitorFuncionario);
 
             conexaoComBanco.Close();
 
