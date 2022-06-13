@@ -95,6 +95,29 @@ namespace ControleMedicamento.Infra.BancoDados.ModuloMedicamento
             WHERE
 	            MEDICAMENTO.[ID] = @ID;";
 
+        // Pode ser dinâmico conforme a necessidade da aplicação
+        private const string sqlSelecionarMedicamentosComPoucoEstoque =
+            @"SELECT 
+                MEDICAMENTO.[ID],
+                MEDICAMENTO.[NOME] NOME_MEDICAMENTO,
+                MEDICAMENTO.[DESCRICAO],
+                MEDICAMENTO.[LOTE],
+                MEDICAMENTO.[VALIDADE],
+                MEDICAMENTO.[QUANTIDADEDISPONIVEL],
+                MEDICAMENTO.[FORNECEDOR_ID],
+                FORNECEDOR.[NOME] NOME_FORNECEDOR,
+                FORNECEDOR.[TELEFONE],
+                FORNECEDOR.[EMAIL],
+                FORNECEDOR.[CIDADE],
+                FORNECEDOR.[ESTADO]
+            FROM
+                [TBMEDICAMENTO] AS MEDICAMENTO LEFT JOIN
+                [TBFORNECEDOR] FORNECEDOR
+            ON
+                MEDICAMENTO.FORNECEDOR_ID = FORNECEDOR.ID
+            WHERE
+                MEDICAMENTO.[QUANTIDADEDISPONIVEL] < 50;";
+
         #endregion
 
         public ValidationResult Inserir(Medicamento novoMedicamento)
@@ -205,6 +228,29 @@ namespace ControleMedicamento.Infra.BancoDados.ModuloMedicamento
             conexaoComBanco.Close();
 
             return medicamento;
+        }
+
+        public List<Medicamento> SelecionarMedicamentosComPoucoEstoque()
+        {
+            SqlConnection conexaoComBanco = new SqlConnection(enderecoBanco);
+
+            SqlCommand comandoSelecao = new SqlCommand(sqlSelecionarMedicamentosComPoucoEstoque, conexaoComBanco);
+
+            conexaoComBanco.Open();
+            SqlDataReader leitorMedicamento = comandoSelecao.ExecuteReader();
+
+            List<Medicamento> medicamentos = new List<Medicamento>();
+
+            while (leitorMedicamento.Read())
+            {
+                Medicamento medicamento = ConverterParaMedicamento(leitorMedicamento);
+
+                medicamentos.Add(medicamento);
+            }
+
+            conexaoComBanco.Close();
+
+            return medicamentos;
         }
 
         private static Medicamento ConverterParaMedicamento(SqlDataReader leitorMedicamento)

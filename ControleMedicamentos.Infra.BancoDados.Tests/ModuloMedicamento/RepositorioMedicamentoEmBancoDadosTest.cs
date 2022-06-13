@@ -145,5 +145,30 @@ namespace ControleMedicamento.Infra.BancoDados.Tests.ModuloMedicamento
             Assert.AreEqual("Nome teste 3", medicamentos[2].Nome);
         }
 
+        [TestMethod]
+        public void Deve_selecionar_medicamentos_com_pouco_estoque()
+        {
+            var fornecedor = new Fornecedor("Nome teste", "Telefone teste", "Email teste", "Cidade teste", "Estado teste");
+            var repositorioFornecedor = new RepositorioFornecedorEmBancoDados();
+            repositorioFornecedor.Inserir(fornecedor);
+
+            var repositorioMedicamento = new RepositorioMedicamentoEmBancoDados();
+            Medicamento m1 = new Medicamento("Nome teste 1", "Descricao teste 1", "Lote teste 1", DateTime.Now.Date, 60, fornecedor);
+            repositorioMedicamento.Inserir(m1);
+
+            Medicamento m2 = new Medicamento("Nome teste 2", "Descricao teste 2", "Lote teste 2", DateTime.Now.Date, 40, fornecedor);
+            repositorioMedicamento.Inserir(m2);
+
+            Medicamento m3 = new Medicamento("Nome teste 3", "Descricao teste 3", "Lote teste 3", DateTime.Now.Date, 20, fornecedor);
+            repositorioMedicamento.Inserir(m3);
+
+            var medicamentos = repositorioMedicamento.SelecionarMedicamentosComPoucoEstoque();
+
+            Assert.AreEqual(2, medicamentos.Count);
+
+            Assert.AreEqual("Nome teste 2", medicamentos[0].Nome);
+            Assert.AreEqual("Nome teste 3", medicamentos[1].Nome);
+        }
+
     }
 }
