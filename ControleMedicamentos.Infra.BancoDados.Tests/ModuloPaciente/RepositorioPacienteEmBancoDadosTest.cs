@@ -16,7 +16,10 @@ namespace ControleMedicamentos.Infra.BancoDados.Tests.ModuloPaciente
         public RepositorioPacienteEmBancoDadosTest()
         {
             string sql =
-                @"DELETE FROM TBPACIENTE;
+                @"DELETE FROM TBREQUISICAO;
+                  DBCC CHECKIDENT (TBREQUISICAO, RESEED, 0)
+
+                  DELETE FROM TBPACIENTE;
                   DBCC CHECKIDENT (TBPACIENTE, RESEED, 0)";
 
             DatabaseConfig.ExecutarSql(sql);

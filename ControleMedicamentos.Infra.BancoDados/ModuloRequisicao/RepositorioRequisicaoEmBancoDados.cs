@@ -1,4 +1,8 @@
 ﻿using ControleMedicamento.Infra.BancoDados.ModuloMedicamento;
+using ControleMedicamentos.Dominio.ModuloFornecedor;
+using ControleMedicamentos.Dominio.ModuloFuncionario;
+using ControleMedicamentos.Dominio.ModuloMedicamento;
+using ControleMedicamentos.Dominio.ModuloPaciente;
 using ControleMedicamentos.Dominio.ModuloRequisicao;
 using ControleMedicamentos.Infra.BancoDados.ModuloFornecedor;
 using ControleMedicamentos.Infra.BancoDados.ModuloFuncionario;
@@ -57,27 +61,91 @@ namespace ControleMedicamentos.Infra.BancoDados.ModuloRequisicao
 
         private const string sqlSelecionarTodos =
 			@"SELECT
-				[ID],
-				[FUNCIONARIO_ID],
-				[PACIENTE_ID],
-				[MEDICAMENTO_ID],
-				[QUANTIDADEMEDICAMENTO],
-				[DATA]
+				REQUISICAO.[ID],
+				REQUISICAO.[FUNCIONARIO_ID],
+				REQUISICAO.[PACIENTE_ID],
+				REQUISICAO.[MEDICAMENTO_ID],
+				REQUISICAO.[QUANTIDADEMEDICAMENTO],
+				REQUISICAO.[DATA],
+				FUNCIONARIO.[NOME] NOME_FUNCIONARIO,
+				FUNCIONARIO.[LOGIN],
+				FUNCIONARIO.[SENHA],
+				PACIENTE.[NOME] NOME_PACIENTE,
+				PACIENTE.[CARTAOSUS],
+				MEDICAMENTO.[NOME] NOME_MEDICAMENTO,
+				MEDICAMENTO.[DESCRICAO],
+				MEDICAMENTO.[LOTE],
+				MEDICAMENTO.[VALIDADE],
+				MEDICAMENTO.[QUANTIDADEDISPONIVEL],
+				MEDICAMENTO.[FORNECEDOR_ID],
+				FORNECEDOR.[NOME] NOME_FORNECEDOR,
+				FORNECEDOR.[TELEFONE],
+				FORNECEDOR.[EMAIL],
+				FORNECEDOR.[CIDADE],
+				FORNECEDOR.[ESTADO]
 			FROM
-				[TBREQUISICAO]";
+				[TBREQUISICAO] AS REQUISICAO 
+					LEFT JOIN
+						[TBFUNCIONARIO] AS FUNCIONARIO
+					ON
+						REQUISICAO.FUNCIONARIO_ID = FUNCIONARIO.ID
+					LEFT JOIN
+						[TBPACIENTE] AS PACIENTE
+					ON
+						REQUISICAO.PACIENTE_ID = PACIENTE.ID
+					LEFT JOIN
+						[TBMEDICAMENTO] AS MEDICAMENTO
+					ON
+						REQUISICAO.MEDICAMENTO_ID = MEDICAMENTO.ID
+					LEFT JOIN
+						[TBFORNECEDOR] AS FORNECEDOR
+					ON
+						MEDICAMENTO.FORNECEDOR_ID = FORNECEDOR.ID";
 
 		private const string sqlSelecionarPorId =
 			@"SELECT
-				[ID],
-				[FUNCIONARIO_ID],
-				[PACIENTE_ID],
-				[MEDICAMENTO_ID],
-				[QUANTIDADEMEDICAMENTO],
-				[DATA]
+				REQUISICAO.[ID],
+				REQUISICAO.[FUNCIONARIO_ID],
+				REQUISICAO.[PACIENTE_ID],
+				REQUISICAO.[MEDICAMENTO_ID],
+				REQUISICAO.[QUANTIDADEMEDICAMENTO],
+				REQUISICAO.[DATA],
+				FUNCIONARIO.[NOME] NOME_FUNCIONARIO,
+				FUNCIONARIO.[LOGIN],
+				FUNCIONARIO.[SENHA],
+				PACIENTE.[NOME] NOME_PACIENTE,
+				PACIENTE.[CARTAOSUS],
+				MEDICAMENTO.[NOME] NOME_MEDICAMENTO,
+				MEDICAMENTO.[DESCRICAO],
+				MEDICAMENTO.[LOTE],
+				MEDICAMENTO.[VALIDADE],
+				MEDICAMENTO.[QUANTIDADEDISPONIVEL],
+				MEDICAMENTO.[FORNECEDOR_ID],
+				FORNECEDOR.[NOME] NOME_FORNECEDOR,
+				FORNECEDOR.[TELEFONE],
+				FORNECEDOR.[EMAIL],
+				FORNECEDOR.[CIDADE],
+				FORNECEDOR.[ESTADO]
 			FROM
-				[TBREQUISICAO]
+				[TBREQUISICAO] AS REQUISICAO 
+					LEFT JOIN
+						[TBFUNCIONARIO] AS FUNCIONARIO
+					ON
+						REQUISICAO.FUNCIONARIO_ID = FUNCIONARIO.ID
+					LEFT JOIN
+						[TBPACIENTE] AS PACIENTE
+					ON
+						REQUISICAO.PACIENTE_ID = PACIENTE.ID
+					LEFT JOIN
+						[TBMEDICAMENTO] AS MEDICAMENTO
+					ON
+						REQUISICAO.MEDICAMENTO_ID = MEDICAMENTO.ID
+					LEFT JOIN
+						[TBFORNECEDOR] AS FORNECEDOR
+					ON
+						MEDICAMENTO.FORNECEDOR_ID = FORNECEDOR.ID
 			WHERE
-				[ID] = @ID";
+				REQUISICAO.[ID] = @ID";
 
 		#endregion
 
@@ -194,22 +262,66 @@ namespace ControleMedicamentos.Infra.BancoDados.ModuloRequisicao
 		private static Requisicao ConverterParaRequisicao(SqlDataReader leitorRequisicao)
 		{
 			int id = Convert.ToInt32(leitorRequisicao["ID"]);
-			int funcionario_id = Convert.ToInt32(leitorRequisicao["FUNCIONARIO_ID"]);
-			int paciente_id = Convert.ToInt32(leitorRequisicao["PACIENTE_ID"]);
-			int medicamento_id = Convert.ToInt32(leitorRequisicao["MEDICAMENTO_ID"]);
 			int qtdMedicamento = Convert.ToInt32(leitorRequisicao["QUANTIDADEMEDICAMENTO"]);
 			//DateTime data = Convert.ToDateTime(leitorRequisicao["DATA"]);
 
-			RepositorioFuncionarioEmBancoDados repositorioFuncionario = new RepositorioFuncionarioEmBancoDados();
-			RepositorioPacienteEmBancoDados repositorioPaciente = new RepositorioPacienteEmBancoDados();
-			RepositorioMedicamentoEmBancoDados repositorioMedicamento = new RepositorioMedicamentoEmBancoDados();
+			int funcionario_id = Convert.ToInt32(leitorRequisicao["FUNCIONARIO_ID"]);
+			string nome_funcionario = Convert.ToString(leitorRequisicao["NOME_FUNCIONARIO"]);
+			string login = Convert.ToString(leitorRequisicao["LOGIN"]);
+			string senha = Convert.ToString(leitorRequisicao["SENHA"]);
+
+			int paciente_id = Convert.ToInt32(leitorRequisicao["PACIENTE_ID"]);
+			string nome_paciente = Convert.ToString(leitorRequisicao["NOME_PACIENTE"]);
+			string cartaosus = Convert.ToString(leitorRequisicao["CARTAOSUS"]);
+
+			int medicamento_id = Convert.ToInt32(leitorRequisicao["MEDICAMENTO_ID"]);
+			string nome_medicamento = Convert.ToString(leitorRequisicao["NOME_MEDICAMENTO"]);
+			string descricao = Convert.ToString(leitorRequisicao["DESCRICAO"]);
+			string lote = Convert.ToString(leitorRequisicao["LOTE"]);
+			DateTime validade = Convert.ToDateTime(leitorRequisicao["VALIDADE"]);
+			int quantidadedisponivel = Convert.ToInt32(leitorRequisicao["QUANTIDADEDISPONIVEL"]);
+			
+			int fornecedor_id = Convert.ToInt32(leitorRequisicao["FORNECEDOR_ID"]);
+			string nome_fornecedor = Convert.ToString(leitorRequisicao["NOME_FORNECEDOR"]);
+			string telefone = Convert.ToString(leitorRequisicao["TELEFONE"]);
+			string email = Convert.ToString(leitorRequisicao["EMAIL"]);
+			string cidade = Convert.ToString(leitorRequisicao["CIDADE"]);
+			string estado = Convert.ToString(leitorRequisicao["ESTADO"]);
+
 
 			var requisicao = new Requisicao
 			{
 				Id = id,
-				Funcionario = repositorioFuncionario.SelecionarPorNumero(funcionario_id),
-				Paciente = repositorioPaciente.SelecionarPorNumero(paciente_id),
-				Medicamento = repositorioMedicamento.SelecionarPorNumero(medicamento_id),
+				Funcionario = new Funcionario()
+                {
+					Id = funcionario_id,
+					Nome = nome_funcionario,
+					Login = login,
+					Senha = senha,
+                },
+				Paciente = new Paciente()
+                {
+					Id = paciente_id,
+					Nome = nome_paciente,
+					CartaoSUS = cartaosus,
+                },
+				Medicamento = new Medicamento()
+                {
+					Id = medicamento_id,
+					Descricao = descricao,
+					Lote = lote,
+					Validade = validade,
+					QuantidadeDisponivel = quantidadedisponivel,
+					Fornecedor = new Fornecedor()
+                    {
+						Id = fornecedor_id,
+						Nome = nome_fornecedor,
+						Telefone = telefone,
+						Email = email,
+						Cidade = cidade,
+						Estado = estado,
+                    }
+                },
 				QtdMedicamento = qtdMedicamento,
 			};
 
