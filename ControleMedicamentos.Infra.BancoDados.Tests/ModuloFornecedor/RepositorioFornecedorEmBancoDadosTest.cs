@@ -86,6 +86,7 @@ namespace ControleMedicamentos.Infra.BancoDados.Tests.ModuloFornecedor
             Assert.AreEqual(fornecedorAtualizado.Estado, fornecedorEncontrado.Estado);
         }
 
+        // TODO Validar exclusão de fornecedor
         [TestMethod]
         public void Deve_excluir_fornecedor()
         {

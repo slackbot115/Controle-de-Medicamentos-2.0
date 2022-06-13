@@ -1,4 +1,5 @@
-﻿using ControleMedicamentos.Dominio.ModuloMedicamento;
+﻿using ControleMedicamentos.Dominio.ModuloFornecedor;
+using ControleMedicamentos.Dominio.ModuloMedicamento;
 using ControleMedicamentos.Infra.BancoDados.ModuloFornecedor;
 using FluentValidation.Results;
 using System;
@@ -53,30 +54,46 @@ namespace ControleMedicamento.Infra.BancoDados.ModuloMedicamento
 					[ID] = @ID";
 
         private const string sqlSelecionarTodos =
-            @"SELECT
-				[ID],
-				[NOME],
-				[DESCRICAO],
-				[LOTE],
-				[VALIDADE],
-				[QUANTIDADEDISPONIVEL],
-				[FORNECEDOR_ID]
-			FROM
-				[TBMEDICAMENTO]";
+            @"SELECT 
+	            MEDICAMENTO.[ID],
+	            MEDICAMENTO.[NOME] NOME_MEDICAMENTO,
+	            MEDICAMENTO.[DESCRICAO],
+                MEDICAMENTO.[LOTE],
+                MEDICAMENTO.[VALIDADE],
+                MEDICAMENTO.[QUANTIDADEDISPONIVEL],
+                MEDICAMENTO.[FORNECEDOR_ID],
+                FORNECEDOR.[NOME] NOME_FORNECEDOR,
+                FORNECEDOR.[TELEFONE],
+                FORNECEDOR.[EMAIL],
+                FORNECEDOR.[CIDADE],
+                FORNECEDOR.[ESTADO]
+            FROM
+	            [TBMEDICAMENTO] AS MEDICAMENTO LEFT JOIN
+	            [TBFORNECEDOR] FORNECEDOR
+            ON
+	            MEDICAMENTO.FORNECEDOR_ID = FORNECEDOR.ID";
 
         private const string sqlSelecionarPorId =
-            @"SELECT
-				[ID],
-				[NOME],
-				[DESCRICAO],
-				[LOTE],
-				[VALIDADE],
-				[QUANTIDADEDISPONIVEL],
-				[FORNECEDOR_ID]
-			FROM
-				[TBMEDICAMENTO]
-			WHERE
-				[ID] = @ID";
+            @"SELECT 
+	            MEDICAMENTO.[ID],
+	            MEDICAMENTO.[NOME] NOME_MEDICAMENTO,
+	            MEDICAMENTO.[DESCRICAO],
+                MEDICAMENTO.[LOTE],
+                MEDICAMENTO.[VALIDADE],
+                MEDICAMENTO.[QUANTIDADEDISPONIVEL],
+                MEDICAMENTO.[FORNECEDOR_ID],
+                FORNECEDOR.[NOME] NOME_FORNECEDOR,
+                FORNECEDOR.[TELEFONE],
+                FORNECEDOR.[EMAIL],
+                FORNECEDOR.[CIDADE],
+                FORNECEDOR.[ESTADO]
+            FROM
+	            [TBMEDICAMENTO] AS MEDICAMENTO LEFT JOIN
+	            [TBFORNECEDOR] FORNECEDOR
+            ON
+	            MEDICAMENTO.FORNECEDOR_ID = FORNECEDOR.ID
+            WHERE
+	            MEDICAMENTO.[ID] = @ID;";
 
         #endregion
 
@@ -193,24 +210,37 @@ namespace ControleMedicamento.Infra.BancoDados.ModuloMedicamento
         private static Medicamento ConverterParaMedicamento(SqlDataReader leitorMedicamento)
         {
             int id = Convert.ToInt32(leitorMedicamento["ID"]);
-            string nome = Convert.ToString(leitorMedicamento["NOME"]);
+            string nome_medicamento = Convert.ToString(leitorMedicamento["NOME_MEDICAMENTO"]);
             string descricao = Convert.ToString(leitorMedicamento["DESCRICAO"]);
             string lote = Convert.ToString(leitorMedicamento["LOTE"]);
             DateTime validade = Convert.ToDateTime(leitorMedicamento["VALIDADE"]);
             int qtdDisponivel = Convert.ToInt32(leitorMedicamento["QUANTIDADEDISPONIVEL"]);
+            
             int fornecedor_id = Convert.ToInt32(leitorMedicamento["FORNECEDOR_ID"]);
+            string nome_fornecedor = Convert.ToString(leitorMedicamento["NOME_FORNECEDOR"]);
+            string telefone = Convert.ToString(leitorMedicamento["TELEFONE"]);
+            string email = Convert.ToString(leitorMedicamento["EMAIL"]);
+            string cidade = Convert.ToString(leitorMedicamento["CIDADE"]);
+            string estado = Convert.ToString(leitorMedicamento["ESTADO"]);
 
             RepositorioFornecedorEmBancoDados repositorioFornecedor = new RepositorioFornecedorEmBancoDados();
 
             var medicamento = new Medicamento
             {
                 Id = id,
-                Nome = nome,
+                Nome = nome_medicamento,
                 Descricao = descricao,
                 Lote = lote,
                 Validade = validade,
                 QuantidadeDisponivel = qtdDisponivel,
-                Fornecedor = repositorioFornecedor.SelecionarPorNumero(fornecedor_id)
+                Fornecedor = new Fornecedor() {
+                    Id = fornecedor_id,
+                    Nome = nome_fornecedor,
+                    Telefone = telefone,
+                    Email = email,
+                    Cidade = cidade,
+                    Estado = estado,
+                }
             };
 
             return medicamento;

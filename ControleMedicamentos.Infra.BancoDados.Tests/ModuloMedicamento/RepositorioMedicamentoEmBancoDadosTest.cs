@@ -14,12 +14,14 @@ namespace ControleMedicamento.Infra.BancoDados.Tests.ModuloMedicamento
         public RepositorioMedicamentoEmBancoDadosTest()
         {
             string sql =
-                @"DELETE FROM TBMEDICAMENTO;
-                  DBCC CHECKIDENT (TBMEDICAMENTO, RESEED, 0)
+                @"DELETE FROM TBREQUISICAO;
+                DBCC CHECKIDENT (TBREQUISICAO, RESEED, 0)
 
-                  DELETE FROM TBFORNECEDOR;
-                  DBCC CHECKIDENT (TBFORNECEDOR, RESEED, 0)
-                  ";
+                DELETE FROM TBMEDICAMENTO;
+                DBCC CHECKIDENT (TBMEDICAMENTO, RESEED, 0)
+
+                DELETE FROM TBFORNECEDOR;
+                DBCC CHECKIDENT (TBFORNECEDOR, RESEED, 0)";
 
             DatabaseConfig.ExecutarSql(sql);
         }
@@ -78,7 +80,6 @@ namespace ControleMedicamento.Infra.BancoDados.Tests.ModuloMedicamento
             Assert.AreEqual(medicamentoAtualizado.Fornecedor.Id, medicamentoEncontrado.Fornecedor.Id);
         }
 
-        //////////////////////// SE EXCLUIR UM FORNECEDOR NÃO DEVE EXCLUIR O MEDICAMENTO?
         [TestMethod]
         public void Deve_excluir_medicamento()
         {
