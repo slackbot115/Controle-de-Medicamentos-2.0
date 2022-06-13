@@ -156,18 +156,18 @@ namespace ControleMedicamento.Infra.BancoDados.ModuloMedicamento
             conexaoComBanco.Open();
             SqlDataReader leitorMedicamento = comandoSelecao.ExecuteReader();
 
-            List<Medicamento> funcionarios = new List<Medicamento>();
+            List<Medicamento> medicamentos = new List<Medicamento>();
 
             while (leitorMedicamento.Read())
             {
                 Medicamento medicamento = ConverterParaMedicamento(leitorMedicamento);
 
-                funcionarios.Add(medicamento);
+                medicamentos.Add(medicamento);
             }
 
             conexaoComBanco.Close();
 
-            return funcionarios;
+            return medicamentos;
         }
 
         public Medicamento SelecionarPorNumero(int id)
@@ -181,13 +181,13 @@ namespace ControleMedicamento.Infra.BancoDados.ModuloMedicamento
             conexaoComBanco.Open();
             SqlDataReader leitorMedicamento = comandoSelecao.ExecuteReader();
 
-            Medicamento paciente = null;
+            Medicamento medicamento = null;
             if (leitorMedicamento.Read())
-                paciente = ConverterParaMedicamento(leitorMedicamento);
+                medicamento = ConverterParaMedicamento(leitorMedicamento);
 
             conexaoComBanco.Close();
 
-            return paciente;
+            return medicamento;
         }
 
         private static Medicamento ConverterParaMedicamento(SqlDataReader leitorMedicamento)
@@ -202,7 +202,7 @@ namespace ControleMedicamento.Infra.BancoDados.ModuloMedicamento
 
             RepositorioFornecedorEmBancoDados repositorioFornecedor = new RepositorioFornecedorEmBancoDados();
 
-            var funcionario = new Medicamento
+            var medicamento = new Medicamento
             {
                 Id = id,
                 Nome = nome,
@@ -213,7 +213,7 @@ namespace ControleMedicamento.Infra.BancoDados.ModuloMedicamento
                 Fornecedor = repositorioFornecedor.SelecionarPorNumero(fornecedor_id)
             };
 
-            return funcionario;
+            return medicamento;
         }
 
         private static void ConfigurarParametrosMedicamento(Medicamento novoMedicamento, SqlCommand comando)

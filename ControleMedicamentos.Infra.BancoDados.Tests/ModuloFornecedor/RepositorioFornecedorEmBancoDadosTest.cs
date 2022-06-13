@@ -16,7 +16,10 @@ namespace ControleMedicamentos.Infra.BancoDados.Tests.ModuloFornecedor
         public RepositorioFornecedorEmBancoDadosTest()
         {
             string sql =
-                @"DELETE FROM TBFORNECEDOR;
+                @"DELETE FROM TBMEDICAMENTO;
+                  DBCC CHECKIDENT (TBMEDICAMENTO, RESEED, 0)
+
+                  DELETE FROM TBFORNECEDOR;
                   DBCC CHECKIDENT (TBFORNECEDOR, RESEED, 0)";
 
             DatabaseConfig.ExecutarSql(sql);

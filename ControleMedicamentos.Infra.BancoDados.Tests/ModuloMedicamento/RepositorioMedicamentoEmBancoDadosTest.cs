@@ -14,11 +14,12 @@ namespace ControleMedicamento.Infra.BancoDados.Tests.ModuloMedicamento
         public RepositorioMedicamentoEmBancoDadosTest()
         {
             string sql =
-                @"DELETE FROM TBFORNECEDOR;
-                  DBCC CHECKIDENT (TBFORNECEDOR, RESEED, 0)
+                @"DELETE FROM TBMEDICAMENTO;
+                  DBCC CHECKIDENT (TBMEDICAMENTO, RESEED, 0)
 
-                  DELETE FROM TBMEDICAMENTO;
-                  DBCC CHECKIDENT (TBMEDICAMENTO, RESEED, 0)";
+                  DELETE FROM TBFORNECEDOR;
+                  DBCC CHECKIDENT (TBFORNECEDOR, RESEED, 0)
+                  ";
 
             DatabaseConfig.ExecutarSql(sql);
         }
