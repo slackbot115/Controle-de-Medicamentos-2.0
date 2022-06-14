@@ -1,4 +1,6 @@
-﻿using ControleMedicamentos.Dominio.ModuloFornecedor;
+﻿using ControleMedicamento.Infra.BancoDados.ModuloMedicamento;
+using ControleMedicamentos.Dominio.ModuloFornecedor;
+using ControleMedicamentos.Dominio.ModuloMedicamento;
 using ControleMedicamentos.Infra.BancoDados.Compartilhado;
 using ControleMedicamentos.Infra.BancoDados.ModuloFornecedor;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -16,7 +18,10 @@ namespace ControleMedicamentos.Infra.BancoDados.Tests.ModuloFornecedor
         public RepositorioFornecedorEmBancoDadosTest()
         {
             string sql =
-                @"DELETE FROM TBMEDICAMENTO;
+                @"DELETE FROM TBREQUISICAO;
+                  DBCC CHECKIDENT (TBREQUISICAO, RESEED, 0)
+
+                  DELETE FROM TBMEDICAMENTO;
                   DBCC CHECKIDENT (TBMEDICAMENTO, RESEED, 0)
 
                   DELETE FROM TBFORNECEDOR;
@@ -107,6 +112,22 @@ namespace ControleMedicamentos.Infra.BancoDados.Tests.ModuloFornecedor
             Fornecedor fornecedorEncontrado = repositorio.SelecionarPorNumero(novoFornecedor.Id);
 
             Assert.IsNull(fornecedorEncontrado);
+        }
+
+        [TestMethod]
+        public void Nao_deve_excluir_fornecedor_atrelado_a_um_medicamento()
+        {
+            var fornecedor = new Fornecedor("Nome teste", "Telefone teste", "Email teste", "Cidade teste", "Estado teste");
+            var repositorioFornecedor = new RepositorioFornecedorEmBancoDados();
+            repositorioFornecedor.Inserir(fornecedor);
+
+            Medicamento novoMedicamento = new Medicamento("Nome teste", "Descricao teste", "Lote teste", DateTime.Now.Date, 10, fornecedor);
+            var repositorioMedicamento = new RepositorioMedicamentoEmBancoDados();
+            repositorioMedicamento.Inserir(novoMedicamento);
+
+            var retorno = repositorioFornecedor.Excluir(fornecedor);
+
+            Assert.AreEqual(retorno.Errors[0].ToString(), "Não foi possível remover o registro por haver medicamentos atrelados");
         }
 
         [TestMethod]

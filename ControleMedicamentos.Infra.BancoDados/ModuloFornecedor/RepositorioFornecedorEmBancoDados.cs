@@ -46,6 +46,17 @@ namespace ControleMedicamentos.Infra.BancoDados.ModuloFornecedor
 	            WHERE
 		            [ID] = @ID";
 
+		private const string sqlContarMedicamentosDoFornecedor =
+			@"SELECT 
+				count(*)
+			FROM 
+				[TBMEDICAMENTO] MEDICAMENTO INNER JOIN 
+				[TBFORNECEDOR] FORNECEDOR
+			ON 
+				MEDICAMENTO.FORNECEDOR_ID = FORNECEDOR.ID
+			WHERE
+				MEDICAMENTO.FORNECEDOR_ID = @ID;";
+
         private const string sqlExcluir =
             @"DELETE FROM [TBFORNECEDOR]
 	            WHERE
@@ -127,14 +138,24 @@ namespace ControleMedicamentos.Infra.BancoDados.ModuloFornecedor
 		{
 			SqlConnection conexaoComBanco = new SqlConnection(enderecoBanco);
 
+			SqlCommand comandoVerificacao = new SqlCommand(sqlContarMedicamentosDoFornecedor, conexaoComBanco);
+			comandoVerificacao.Parameters.AddWithValue("ID", fornecedor.Id);
+
+			var resultadoValidacao = new ValidationResult();
+
+			conexaoComBanco.Open();
+			int numeroMedicamentosDoFornecedor = comandoVerificacao.ExecuteNonQuery();
+			if (numeroMedicamentosDoFornecedor != 0)
+            {
+				resultadoValidacao.Errors.Add(new ValidationFailure("", "Não foi possível remover o registro por haver medicamentos atrelados"));
+				return resultadoValidacao;
+            }
+
 			SqlCommand comandoExclusao = new SqlCommand(sqlExcluir, conexaoComBanco);
 
 			comandoExclusao.Parameters.AddWithValue("ID", fornecedor.Id);
 
-			conexaoComBanco.Open();
 			int numeroRegistrosExcluidos = comandoExclusao.ExecuteNonQuery();
-
-			var resultadoValidacao = new ValidationResult();
 
 			if (numeroRegistrosExcluidos == 0)
 				resultadoValidacao.Errors.Add(new ValidationFailure("", "Não foi possível remover o registro"));
